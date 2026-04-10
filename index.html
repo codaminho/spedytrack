@@ -1,54 +1,38 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="fr">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-<meta name="mobile-web-app-capable" content="yes">
-<meta name="apple-mobile-web-app-capable" content="yes">
-<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-<meta name="apple-mobile-web-app-title" content="GC Track">
 <meta name="theme-color" content="#e85d04">
-<title>Gonzalez Concrete — Attendance</title>
+<title>Gonzalez Concrete — Attendance DB</title>
 <style>
   :root {
     --primary: #e85d04;
-    --primary-dark: #dc2f02;
     --bg: #000000;
     --card-bg: #1a1a1a;
     --text: #ffffff;
     --text-dim: #a0a0a0;
     --green-bright: #39ff14;
     --red-bright: #ff3131;
-    --mono: 'JetBrains Mono', 'Fira Code', monospace;
   }
-  * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
   body {
     margin: 0;
-    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+    font-family: -apple-system, system-ui, sans-serif;
     background: var(--bg);
     color: var(--text);
-    overflow: hidden;
     height: 100vh;
-  }
-  .app-container {
     display: flex;
     flex-direction: column;
-    height: 100vh;
-    padding-top: env(safe-area-inset-top);
   }
   header {
     padding: 20px;
-    background: linear-gradient(to bottom, #2a2a2a, #000);
+    background: #111;
     border-bottom: 1px solid #333;
     display: flex;
     justify-content: space-between;
     align-items: center;
   }
-  .logo-text { font-weight: 900; letter-spacing: -0.5px; font-size: 1.2rem; }
-  .logo-text span { color: var(--primary); }
-  
   .main-content { flex: 1; overflow-y: auto; padding: 15px; }
-  
   .employee-card {
     background: var(--card-bg);
     border-radius: 12px;
@@ -57,35 +41,22 @@
     display: flex;
     justify-content: space-between;
     align-items: center;
-    border: 1px solid #2a2a2a;
+    border: 1px solid #222;
   }
-  .employee-info .en { font-weight: 700; font-size: 1.1rem; margin-bottom: 2px; }
-  .employee-info .ero { color: var(--text-dim); font-size: 0.85rem; text-transform: uppercase; }
-  
-  .status-badge {
-    padding: 4px 8px;
-    border-radius: 4px;
-    font-size: 10px;
-    font-weight: 800;
-    text-transform: uppercase;
-  }
-  .status-badge.in { background: rgba(57, 255, 20, 0.1); color: var(--green-bright); border: 1px solid var(--green-bright); }
-  .status-badge.out { background: rgba(255, 49, 49, 0.1); color: var(--red-bright); border: 1px solid var(--red-bright); }
-
   .admin-panel {
     background: #111;
     border-top: 1px solid #333;
     padding: 20px;
     display: none;
   }
-  .grid-inputs { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 15px; }
   input {
+    width: 100%;
     background: #222;
     border: 1px solid #444;
     color: white;
     padding: 12px;
     border-radius: 8px;
-    font-size: 16px;
+    margin-bottom: 10px;
   }
   button {
     background: var(--primary);
@@ -93,133 +64,146 @@
     border: none;
     padding: 12px;
     border-radius: 8px;
-    font-weight: 700;
-    font-size: 16px;
+    font-weight: bold;
     cursor: pointer;
   }
   #toast {
     position: fixed;
-    bottom: 30px;
+    bottom: 20px;
     left: 50%;
     transform: translateX(-50%);
     background: var(--primary);
-    padding: 12px 24px;
-    border-radius: 50px;
-    font-weight: 700;
-    box-shadow: 0 10px 20px rgba(0,0,0,0.5);
+    padding: 10px 20px;
+    border-radius: 20px;
     display: none;
-    z-index: 1000;
+    z-index: 100;
   }
 </style>
 </head>
 <body>
 
-<div class="app-container">
-  <header>
-    <div class="logo-text">GONZALEZ <span>CONCRETE</span></div>
-    <button onclick="askAdmin()" style="padding:5px 10px; font-size:12px; background:#333">ADMIN</button>
-  </header>
+<header>
+  <div style="font-weight:900">GONZALEZ <span style="color:var(--primary)">CONCRETE</span></div>
+  <button onclick="askAdmin()" style="font-size:12px; background:#333">ADMIN</button>
+</header>
 
-  <div class="main-content" id="crewList">
-    </div>
-
-  <div class="admin-panel" id="adminPanel">
-    <h3 style="margin-top:0">Crew Management</h3>
-    <div class="grid-inputs">
-      <input type="text" id="en" placeholder="Full Name">
-      <input type="text" id="ero" placeholder="Role (e.g. Finisher)">
-      <input type="text" id="ei" placeholder="Badge ID">
-      <input type="number" id="ep" placeholder="4-Digit PIN">
-    </div>
-    <button onclick="addEmp()" style="width:100%">ADD TO CREW</button>
-    <button onclick="closeAdmin()" style="width:100%; margin-top:10px; background:#333">EXIT ADMIN</button>
+<div class="main-content" id="crewList">
   </div>
+
+<div class="admin-panel" id="adminPanel">
+  <input type="text" id="en" placeholder="Nom Complet">
+  <input type="text" id="ero" placeholder="Rôle">
+  <input type="text" id="ei" placeholder="ID Badge">
+  <input type="number" id="ep" placeholder="PIN (4 chiffres)">
+  <button onclick="addEmp()" style="width:100%">AJOUTER À LA DB</button>
+  <button onclick="closeAdmin()" style="width:100%; margin-top:10px; background:#333">RETOUR</button>
 </div>
 
 <div id="toast"></div>
 
 <script>
-// Base de données initiale (ADMIN et JORGES restent ici pour les logs)
-const crew = [
-  { id: 'ADMIN', name: 'Admin 1', role: 'ADMIN', pin: '0000', admin: true },
-  { id: 'JORGES', name: 'Admin 2', role: 'JORGES', pin: '2026', admin: true },
-  { id: 'G01', name: 'Ramiro Gonzalez', role: 'Foreman', pin: '1234' }
-];
+let db;
+const dbName = "GCTrackDB";
 
-let sT = JSON.parse(localStorage.getItem('gc_status')) || {};
+// 1. INITIALISATION DE LA BASE DE DONNÉES
+const request = indexedDB.open(dbName, 1);
 
-function gE() {
-  const saved = localStorage.getItem('gc_crew');
-  return saved ? JSON.parse(saved) : crew;
-}
+request.onupgradeneeded = (e) => {
+  db = e.target.result;
+  if (!db.objectStoreNames.contains("crew")) {
+    const store = db.createObjectStore("crew", { keyPath: "id" });
+    // Données par défaut
+    store.add({ id: 'ADMIN', name: 'Admin 1', role: 'ADMIN', pin: '0000', admin: true });
+    store.add({ id: 'JORGES', name: 'Admin 2', role: 'JORGES', pin: '2026', admin: true });
+    store.add({ id: 'G01', name: 'Ramiro Gonzalez', role: 'Foreman', pin: '1234', admin: false });
+  }
+};
 
-function svE(data) { localStorage.setItem('gc_crew', JSON.stringify(data)); }
+request.onsuccess = (e) => {
+  db = e.target.result;
+  rEL();
+};
 
-// MODIFICATION ICI : Filtre pour cacher ADMIN et JORGES de l'interface
+// 2. AFFICHAGE DE L'INTERFACE (AVEC FILTRE ADMIN)
 function rEL() {
-  const emps = gE();
-  document.getElementById('crewList').innerHTML = emps
-    .filter(e => e.id !== 'ADMIN' && e.id !== 'JORGES') // Cache les admins de la liste
-    .map(e => {
-      const st = sT[e.id] ? `<div class="status-badge ${sT[e.id].type}">${sT[e.id].type.toUpperCase()}</div>` : '';
-      return `<div class="employee-card">
-        <div class="employee-info">
-          <div class="en">${e.name}</div>
-          <div class="ero">${e.role} · ${e.id}</div>
+  const transaction = db.transaction(["crew"], "readonly");
+  const store = transaction.objectStore("crew");
+  const getRequest = store.getAll();
+
+  getRequest.onsuccess = () => {
+    const emps = getRequest.result;
+    const list = document.getElementById('crewList');
+    
+    list.innerHTML = emps
+      .filter(e => e.id !== 'ADMIN' && e.id !== 'JORGES') // CACHE LES ADMINS DE L'INTERFACE
+      .map(e => `
+        <div class="employee-card">
+          <div>
+            <div style="font-weight:bold">${e.name}</div>
+            <div style="color:var(--text-dim); font-size:12px">${e.role} • ${e.id}</div>
+          </div>
+          ${!e.admin ? `<button onclick="rmEmp('${e.id}')" style="background:none; color:var(--red-bright)">✕</button>` : ''}
         </div>
-        <div style="display:flex;flex-direction:column;align-items:flex-end;gap:4px;flex-shrink:0">
-          ${st}
-          ${!e.admin ? `<button onclick="rmEmp('${e.id}')" style="background:none;border:none;color:var(--red-bright);font-size:13px;cursor:pointer;padding:2px">✕</button>` : '<span style="font-family:var(--mono);font-size:7px;color:var(--text-dim)">ADMIN</span>'}
-        </div>
-      </div>`;
-    }).join('');
+      `).join('');
+  };
 }
 
+// 3. ACTIONS ADMIN
 function askAdmin() {
-  const p = prompt("Enter Admin PIN:");
-  const emps = gE();
-  const adm = emps.find(e => e.admin && e.pin === p);
-  if(adm) {
-    document.getElementById('adminPanel').style.display = 'block';
-    toast("Welcome, " + adm.name);
-  } else {
-    toast("Invalid Admin PIN", true);
+  const p = prompt("PIN Administrateur :");
+  const transaction = db.transaction(["crew"], "readonly");
+  const store = transaction.objectStore("crew");
+  const req = store.getAll();
+
+  req.onsuccess = () => {
+    const admin = req.result.find(e => e.admin && e.pin === p);
+    if(admin) {
+      document.getElementById('adminPanel').style.display = 'block';
+      toast("Accès autorisé : " + admin.name);
+    } else {
+      toast("PIN incorrect", true);
+    }
+  };
+}
+
+function addEmp() {
+  const n = document.getElementById('en').value.trim();
+  const r = document.getElementById('ero').value.trim();
+  const i = document.getElementById('ei').value.trim().toUpperCase();
+  const p = document.getElementById('ep').value.trim();
+
+  if(!n || !i || !p) return toast("Champs manquants", true);
+
+  const transaction = db.transaction(["crew"], "readwrite");
+  const store = transaction.objectStore("crew");
+  
+  const addReq = store.add({ id: i, name: n, role: r, pin: p, admin: false });
+  
+  addReq.onsuccess = () => {
+    rEL();
+    toast("Employé ajouté à la base de données");
+    ['en','ero','ei','ep'].forEach(id => document.getElementById(id).value = '');
+  };
+  addReq.onerror = () => toast("ID déjà existant", true);
+}
+
+function rmEmp(id) {
+  if(confirm("Supprimer définitivement de la base de données ?")) {
+    const transaction = db.transaction(["crew"], "readwrite");
+    transaction.objectStore("crew").delete(id);
+    transaction.oncomplete = () => rEL();
   }
 }
 
 function closeAdmin() { document.getElementById('adminPanel').style.display = 'none'; }
 
-function addEmp() {
-  const n=document.getElementById('en').value.trim();
-  const r=document.getElementById('ero').value.trim();
-  const i=document.getElementById('ei').value.trim().toUpperCase();
-  const p=document.getElementById('ep').value.trim();
-  
-  if(!n||!r||!i||!p){toast('⚠ All fields required',true);return;}
-  const emps=gE();
-  emps.push({id:i, name:n, role:r, pin:p});
-  svE(emps); rEL();
-  toast(`✔ ${n} added`);
-}
-
-function rmEmp(id) {
-  if(confirm('Remove this employee?')) {
-    let emps = gE().filter(e => e.id !== id);
-    svE(emps); rEL();
-  }
-}
-
-function toast(msg, err=false) {
+function toast(m, err=false) {
   const t = document.getElementById('toast');
-  t.innerHTML = msg;
+  t.innerText = m;
   t.style.background = err ? 'var(--red-bright)' : 'var(--primary)';
   t.style.display = 'block';
   setTimeout(() => t.style.display = 'none', 3000);
 }
-
-// Initial Load
-rEL();
 </script>
-
 </body>
 </html>
