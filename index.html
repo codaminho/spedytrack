@@ -173,7 +173,8 @@ td.mo{font-family:var(--mono);font-size:9px;color:var(--text-dim);white-space:no
     <button class="btn bpr" onclick="doLogin()">SIGN IN</button>
     <div class="ld">
       DEMO · Employee: <b>GC-001</b> → PIN: <b>1234</b><br>
-      Admin: <b>ADMIN</b> → PIN: <b>0000</b>
+      Admin 1: <b>ADMIN</b> → PIN: <b>0000</b><br>
+      Admin 2: <b>JORGES</b> → PIN: <b>2026</b>
     </div>
   </div>
 </div>
@@ -306,7 +307,7 @@ td.mo{font-family:var(--mono);font-size:9px;color:var(--text-dim);white-space:no
   <nav class="bnav">
     <button class="ni active" onclick="gp('dashboard')" id="nd"><span class="ico">📊</span><span class="lbl">Board</span></button>
     <button class="ni" onclick="gp('checkin')" id="nc"><span class="ico">📍</span><span class="lbl">Clock</span></button>
-    <button class="ni" onclick="gp('history')" id="nh"><span class="ico">📋</span><span class="lbl">Logs</span></button>
+    <button class="ni admin-only" onclick="gp('history')" id="nh" style="display:none"><span class="ico">📋</span><span class="lbl">Logs</span></button>
     <button class="ni admin-only" onclick="gp('employees')" id="ne" style="display:none"><span class="ico">👷</span><span class="lbl">Crew</span></button>
   </nav>
 
@@ -318,6 +319,7 @@ td.mo{font-family:var(--mono);font-size:9px;color:var(--text-dim);white-space:no
 let U=null,LOC=null,CE=null,DI=null;
 const DEFS=[
   {id:'ADMIN',name:'Administrator',role:'HR Manager',pin:'0000',admin:true},
+  {id:'JORGES',name:'Jorge S',role:'Site Manager',pin:'2026',admin:true},
   {id:'GC-001',name:'Carlos Mendez',role:'Site Foreman',pin:'1234'},
   {id:'GC-002',name:'Ahmed Bouali',role:'Mason',pin:'1234'},
   {id:'GC-003',name:'Luis Ramirez',role:'Electrician',pin:'1234'},
